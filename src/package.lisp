@@ -1,8 +1,6 @@
 (in-package :cl-user)
 (defpackage docparser
   (:use :cl)
-  (:import-from :trivial-types
-                :proper-list)
   (:import-from :anaphora
                 :awhen
                 :it)

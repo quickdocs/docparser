@@ -6,8 +6,7 @@
   :homepage ""
   :bug-tracker ""
   :source-control (:git "")
-  :depends-on (:trivial-types
-               :alexandria
+  :depends-on (:alexandria
                :anaphora
                :cffi)
   :components ((:module "src"

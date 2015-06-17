@@ -64,15 +64,15 @@
   ((accessors :reader slot-accessors
               :initarg :accessors
               :initform nil
-              :type (proper-list symbol))
+              :type list)
    (readers :reader slot-readers
             :initarg :readers
             :initform nil
-            :type (proper-list symbol))
+            :type list)
    (writers :reader slot-writers
             :initarg :writers
             :initform nil
-            :type (proper-list symbol))
+            :type list)
    (type :reader slot-type
          :initarg :type
          :documentation "The slot's type.")
@@ -91,18 +91,18 @@
 (defclass struct-node (record-node)
   ((slots :reader record-slots
           :initarg :slots
-          :type (proper-list struct-slot-node)
+          :type list
           :documentation "A list of slots."))
   (:documentation "A structure."))
 
 (defclass class-node (record-node)
   ((superclasses :reader class-node-superclasses
                  :initarg :superclasses
-                 :type (proper-list symbol)
+                 :type list
                  :documentation "A list of the class's superclasses (symbols).")
    (slots :reader record-slots
           :initarg :slots
-          :type (proper-list class-slot-node)
+          :type list
           :documentation "A list of slots."))
   (:documentation "A class."))
 
@@ -142,28 +142,28 @@
 (defclass cffi-struct (cffi-node documentation-node)
   ((slots :reader cffi-struct-slots
           :initarg :slots
-          :type (proper-list cffi-slot)
+          :type list
           :documentation "A list of CFFI slots."))
   (:documentation "A C structure."))
 
 (defclass cffi-union (cffi-node documentation-node)
   ((variants :reader cffi-union-variants
              :initarg :variants
-             :type (proper-list cffi-slot)
+             :type list
              :documentation "A list of CFFI slots."))
   (:documentation "A C union."))
 
 (defclass cffi-enum (cffi-node documentation-node)
   ((variants :reader cffi-enum-variants
              :initarg :variants
-             :type (proper-list keyword)
+             :type list
              :documentation "A list of enum values (keywords)."))
   (:documentation "A C enum."))
 
 (defclass cffi-bitfield (cffi-node documentation-node)
   ((masks :reader cffi-bitfield-masks
           :initarg :masks
-          :type (proper-list keyword)
+          :type list
           :documentation "A list of masks (keywords)."))
   (:documentation "A C bitfield."))
 
