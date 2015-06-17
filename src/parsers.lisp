@@ -156,7 +156,7 @@
 
 ;;; CFFI parsers
 
-(define-parser cffi:defcfun (name-and-options return-type &rest args)
+(define-cffi-parser :defcfun (name-and-options return-type &rest args)
   (let ((name (if (listp name-and-options)
                   (first (remove-if-not #'symbolp name-and-options))
                   name-and-options))
@@ -172,7 +172,7 @@
                    :return-type return-type
                    :lambda-list args)))
 
-(define-parser cffi:defctype (name base-type &optional docstring)
+(define-cffi-parser :defctype (name base-type &optional docstring)
   (make-instance 'cffi-type
                  :name name
                  :docstring docstring
@@ -185,7 +185,7 @@
                    :name name
                    :type type)))
 
-(define-parser cffi:defcstruct (name-and-options &rest doc-and-slots)
+(define-cffi-parser :defcstruct (name-and-options &rest doc-and-slots)
   (let ((name (if (listp name-and-options)
                   (first name-and-options)
                   name-and-options))
@@ -201,7 +201,7 @@
                    :slots (loop for slot in slots collecting
                             (parse-cffi-slot slot)))))
 
-(define-parser cffi:defcunion (name &rest doc-and-slots)
+(define-cffi-parser :defcunion (name &rest doc-and-slots)
   (let ((docstring (if (stringp (first doc-and-slots))
                        (first doc-and-slots)
                        nil))
@@ -214,7 +214,7 @@
                    :variants (loop for slot in slots collecting
                                (parse-cffi-slot slot)))))
 
-(define-parser cffi:defcenum (name-and-options &rest enum-list)
+(define-cffi-parser :defcenum (name-and-options &rest enum-list)
   (let ((name (if (listp name-and-options)
                   (first name-and-options)
                   name-and-options))
@@ -232,7 +232,7 @@
                                    (first variant)
                                    variant)))))
 
-(define-parser cffi:defbitfield (name-and-options &rest masks)
+(define-cffi-parser :defbitfield (name-and-options &rest masks)
   (let ((name (if (listp name-and-options)
                   (first name-and-options)
                   name-and-options))

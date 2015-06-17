@@ -13,14 +13,16 @@
        (uiop:with-muffled-compiler-conditions ()
          (uiop:with-muffled-loader-conditions ()
            ,@body))
-     (cffi:load-foreign-library-error ()
-       (format t "Failed to load foreign library. Ignoring.~%"))
      (uiop:compile-file-error ()
        (format t "Compilation error. Ignoring. ~%"))
      (asdf:load-system-definition-error ()
        (format t "Error when loading the system definition. Ignoring.~%"))
      (error (c)
-       (format t "Unknown error: ~A~%" c))))
+       (let ((condition (class-name (class-of c))))
+         (if (and (string= (package-name (symbol-package condition)) :cffi)
+                  (string= (symbol-name condition) :load-foreign-library-error))
+             (format t "Failed to load foreign library. Ignoring.~%")
+             (format t "Unknown error: ~A~%" c))))))
 
 (defun ensure-preload (system-name)
   #+quicklisp (with-ignored-errors ()
@@ -84,6 +86,9 @@
 (defvar *parsers* (list)
   "A list of symbols to the functions used to parse their corresponding forms.")
 
+(defvar *cffi-parsers* (list)
+  "A list of symbols to the functions used to parse CFFI macros.")
+
 (defmacro define-parser (name (&rest lambda-list) &body body)
   "Define a parser."
   (let ((form (gensym)))
@@ -92,11 +97,25 @@
                             ,@body)))
            *parsers*)))
 
+(defmacro define-cffi-parser (name (&rest lambda-list) &body body)
+  (check-type name keyword)
+  (let ((form (gensym)))
+    `(push (cons ,name (lambda (,form)
+                         (destructuring-bind ,lambda-list ,form
+                           ,@body)))
+           *cffi-parsers*)))
+
 (defun parse-form (form)
   "Parse a form into a node."
-  (let ((parser (rest (assoc (first form) *parsers*))))
-    (when parser
-      (funcall parser (rest form)))))
+  (let ((first (first form)))
+    (when (and (symbolp first)
+               (string= (package-name (symbol-package first)) :cffi))
+      (let ((parser (rest (assoc first *cffi-parsers* :test #'string=))))
+        (when parser
+          (return-from parse-form (funcall parser (rest form))))))
+    (let ((parser (rest (assoc first *parsers*))))
+      (when parser
+        (funcall parser (rest form))))))
 
 (defun parse-package-definition (form)
   (let ((name (princ-to-string (first form)))

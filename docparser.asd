@@ -6,7 +6,6 @@
   :homepage ""
   :bug-tracker ""
   :source-control (:git "")
-  :depends-on (:cffi)
   :components ((:module "src"
                 :serial t
                 :components
