@@ -56,6 +56,9 @@
            :symbol-package-name
            :render-full-symbol
            :render-humanize)
+  ;; Parsers
+  (:export :define-parser
+           :define-cffi-parser)
   ;; Indices
   (:export :package-index
            :index
