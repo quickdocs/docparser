@@ -1,23 +1,19 @@
 machine:
   environment:
     LISP: sbcl
-    COVERALLS: true
 
 dependencies:
   pre:
     - curl -L https://raw.githubusercontent.com/snmsts/roswell/master/scripts/install-for-ci.sh | sh
     - ros run -- --version
-  override:
-    - git clone https://github.com/fukamachi/cl-coveralls ~/lisp/cl-coveralls
 
 test:
   override:
-    - ros -s fiveam -s cl-coveralls
+    - ros -s fiveam
           -e '(setf fiveam:*debug-on-error* t
                     fiveam:*debug-on-failure* t)'
           -e '(setf *debugger-hook*
                     (lambda (c h)
                       (declare (ignore c h))
                       (uiop:quit -1)))'
-          -e '(coveralls:with-coveralls (:exclude (list "t"))
-                (ql:quickload :docparser-test))'
+          -e '(ql:quickload :docparser-test)'
