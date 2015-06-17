@@ -2,7 +2,7 @@
 (in-package :docparser)
 
 (defclass name-node ()
-  ((form :reader node-form
+  ((form :accessor node-form
          :initarg :form
          :documentation "The original form.")
    (node-name :reader node-name
