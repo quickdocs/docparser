@@ -1,9 +1,6 @@
 (in-package :cl-user)
 (defpackage docparser
   (:use :cl)
-  (:import-from :anaphora
-                :awhen
-                :it)
   ;; Classes
   (:export :name-node
            :documentation-node
