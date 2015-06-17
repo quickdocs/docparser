@@ -1,4 +1,4 @@
-(in-package :docparser)
+(in-package :quickdocs-parser)
 
 (define-parser cl:defun (name (&rest args) &rest body)
   (let ((docstring (if (stringp (first body))

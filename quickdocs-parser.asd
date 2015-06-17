@@ -1,6 +1,6 @@
-(defsystem docparser
-  :author "Fernando Borretti <eudoxiahp@gmail.com>"
-  :maintainer "Fernando Borretti <eudoxiahp@gmail.com>"
+(defsystem quickdocs-parser
+  :author "Fernando Borretti <eudoxiahp@gmail.com>, Eitaro Fukamachi <e.arrows@gmail.com>"
+  :maintainer "Eitaro Fukamachi <e.arrows@gmail.com>"
   :license "MIT"
   :version "0.1"
   :homepage ""
@@ -18,4 +18,4 @@
   :long-description
   #.(uiop:read-file-string
      (uiop:subpathname *load-pathname* "README.md"))
-  :in-order-to ((test-op (test-op docparser-test))))
+  :in-order-to ((test-op (test-op quickdocs-parser-test))))

@@ -16,4 +16,4 @@ test:
                     (lambda (c h)
                       (declare (ignore c h))
                       (uiop:quit -1)))'
-          -e '(ql:quickload :docparser-test)'
+          -e '(ql:quickload :quickdocs-parser-test)'

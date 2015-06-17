@@ -1,7 +1,7 @@
 (in-package :cl-user)
-(defpackage docparser-test
+(defpackage quickdocs-parser-test
   (:use :cl :fiveam))
-(in-package :docparser-test)
+(in-package :quickdocs-parser-test)
 
 ;;; Utilities
 
@@ -10,9 +10,9 @@
      (is
       (typep ,node ',type))
      (is
-      (equal (symbol-name (docparser:node-name ,node))
+      (equal (symbol-name (quickdocs-parser:node-name ,node))
              ,name))
-     (is (equal (docparser:node-docstring ,node)
+     (is (equal (quickdocs-parser:node-docstring ,node)
                 "docstring"))
      ,@body
      (incf current-node)))
@@ -26,127 +26,127 @@
 (defvar *index* nil)
 
 (test system-parsing
-  (let ((*index* (docparser:parse :docparser-test-system)))
+  (let ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system)))
     ;; Test the package
     (is
-     (equal (length (docparser::index-packages *index*))
+     (equal (length (quickdocs-parser::index-packages *index*))
             1))
-    (let ((package-index (elt (docparser::index-packages *index*) 0)))
+    (let ((package-index (elt (quickdocs-parser::index-packages *index*) 0)))
       (is
-       (equal (docparser::package-index-name package-index)
-              "DOCPARSER-TEST-SYSTEM")))))
+       (equal (quickdocs-parser::package-index-name package-index)
+              "QUICKDOCS-PARSER-TEST-SYSTEM")))))
 
 (test variable-nodes
-  (let* ((*index* (docparser:parse :docparser-test-system))
-         (nodes (docparser::package-index-nodes
-                 (elt (docparser::index-packages *index*) 0)))
+  (let* ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system))
+         (nodes (quickdocs-parser::package-index-nodes
+                 (elt (quickdocs-parser::index-packages *index*) 0)))
          (current-node 0))
-    (with-test-node (node docparser:variable-node "VAR")
+    (with-test-node (node quickdocs-parser:variable-node "VAR")
       t)
-    (with-test-node (node docparser:variable-node "VAR2")
+    (with-test-node (node quickdocs-parser:variable-node "VAR2")
       t)
-    (with-test-node (node docparser:variable-node "CONST")
+    (with-test-node (node quickdocs-parser:variable-node "CONST")
       t)))
 
 (test operator-nodes
-  (let* ((*index* (docparser:parse :docparser-test-system))
-         (nodes (docparser::package-index-nodes
-                 (elt (docparser::index-packages *index*) 0)))
+  (let* ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system))
+         (nodes (quickdocs-parser::package-index-nodes
+                 (elt (quickdocs-parser::index-packages *index*) 0)))
          (current-node 3))
     ;; The `func` function
-    (with-test-node (node docparser:function-node "FUNC")
+    (with-test-node (node quickdocs-parser:function-node "FUNC")
       (is
-       (equal (length (docparser:operator-lambda-list node))
+       (equal (length (quickdocs-parser:operator-lambda-list node))
               5)))
     ;; The `mac` macro
-    (with-test-node (node docparser:macro-node "MAC")
+    (with-test-node (node quickdocs-parser:macro-node "MAC")
       (is
-       (equal (length (docparser:operator-lambda-list node))
+       (equal (length (quickdocs-parser:operator-lambda-list node))
               3)))))
 
 (test type-nodes
-  (let* ((*index* (docparser:parse :docparser-test-system))
-         (nodes (docparser::package-index-nodes
-                 (elt (docparser::index-packages *index*) 0)))
+  (let* ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system))
+         (nodes (quickdocs-parser::package-index-nodes
+                 (elt (quickdocs-parser::index-packages *index*) 0)))
          (current-node 5))
     ;; The `rec1` struct
-    (with-test-node (node docparser:struct-node "REC1"))
+    (with-test-node (node quickdocs-parser:struct-node "REC1"))
                                         ; Skip some defstruct-generated stuff
     (incf current-node 9)
     ;; The `rec2` struct
-    (with-test-node (node docparser:struct-node "REC2"))
+    (with-test-node (node quickdocs-parser:struct-node "REC2"))
                                         ; Skip some defstruct-generated stuff
     (incf current-node 7)
     ;; The `custom-string` type
-    (with-test-node (node docparser:type-node "CUSTOM-STRING"))
+    (with-test-node (node quickdocs-parser:type-node "CUSTOM-STRING"))
     ;; The `test-class` class
-    (with-test-node (node docparser:class-node "TEST-CLASS")
-      (is (equal (length (docparser:record-slots node))
+    (with-test-node (node quickdocs-parser:class-node "TEST-CLASS")
+      (is (equal (length (quickdocs-parser:record-slots node))
                  3))
-      (let ((first-slot (first (docparser:record-slots node))))
+      (let ((first-slot (first (quickdocs-parser:record-slots node))))
         (is
-         (typep first-slot 'docparser:class-slot-node))
+         (typep first-slot 'quickdocs-parser:class-slot-node))
         (is
-         (equal (symbol-name (docparser:node-name first-slot))
+         (equal (symbol-name (quickdocs-parser:node-name first-slot))
                 "FIRST-SLOT"))
         (is
-         (equal (docparser:node-docstring first-slot)
+         (equal (quickdocs-parser:node-docstring first-slot)
                 "docstring"))))))
 
 (test method-nodes
-  (let* ((*index* (docparser:parse :docparser-test-system))
-         (nodes (docparser::package-index-nodes
-                 (elt (docparser::index-packages *index*) 0)))
+  (let* ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system))
+         (nodes (quickdocs-parser::package-index-nodes
+                 (elt (quickdocs-parser::index-packages *index*) 0)))
          (current-node 25))
     ;; The `test-method` defgeneric
     (incf current-node)
     ;; The `test-method` method
     (incf current-node)
     ;; The `indirectly-define-function` macro
-    (with-test-node (node docparser:macro-node "INDIRECTLY-DEFINE-FUNCTION")
+    (with-test-node (node quickdocs-parser:macro-node "INDIRECTLY-DEFINE-FUNCTION")
       (is
-       (equal (length (docparser:operator-lambda-list node))
+       (equal (length (quickdocs-parser:operator-lambda-list node))
               0)))
     ;; The `hidden-function` function
-    (with-test-node (node docparser:function-node "HIDDEN-FUNCTION")
+    (with-test-node (node quickdocs-parser:function-node "HIDDEN-FUNCTION")
       (is
-       (equal (length (docparser:operator-lambda-list node))
+       (equal (length (quickdocs-parser:operator-lambda-list node))
               0)))))
 
 (test cffi-nodes
-  (let* ((*index* (docparser:parse :docparser-test-system))
-         (nodes (docparser::package-index-nodes
-                 (elt (docparser::index-packages *index*) 0)))
+  (let* ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system))
+         (nodes (quickdocs-parser::package-index-nodes
+                 (elt (quickdocs-parser::index-packages *index*) 0)))
          (current-node 29))
     ;; The `printf` function
     (incf current-node 2)
     ;; The `size-t` CFFI type
-    (with-test-node (node docparser:cffi-type "SIZE-T"))
+    (with-test-node (node quickdocs-parser:cffi-type "SIZE-T"))
     ;; The `cstruct` struct
     (incf current-node 2)
     ;; The `cunion` union
     (incf current-node 1)
     ;; The `nums` CFFI enum
-    (with-test-node (node docparser:cffi-enum "NUMS")
-      (is (equal (docparser:cffi-enum-variants node)
+    (with-test-node (node quickdocs-parser:cffi-enum "NUMS")
+      (is (equal (quickdocs-parser:cffi-enum-variants node)
                  (list :a :b :c))))
     ;; The `bits` CFFI bitfield
-    (with-test-node (node docparser:cffi-bitfield "BITS")
-      (is (equal (docparser:cffi-bitfield-masks node)
+    (with-test-node (node quickdocs-parser:cffi-bitfield "BITS")
+      (is (equal (quickdocs-parser:cffi-bitfield-masks node)
                  (list :a :b :c))))))
 
 (test queries
-  (let ((*index* (docparser:parse :docparser-test-system)))
-    (let ((result (docparser:query *index* :symbol-name "VAR")))
+  (let ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system)))
+    (let ((result (quickdocs-parser:query *index* :symbol-name "VAR")))
       (is (equal (length result)
                  1))
-      (is (equal (docparser:node-docstring (elt result 0))
+      (is (equal (quickdocs-parser:node-docstring (elt result 0))
                  "docstring")))
-    (let ((result (docparser:query *index* :package-name "DOCPARSER-TEST-SYSTEM"
+    (let ((result (quickdocs-parser:query *index* :package-name "QUICKDOCS-PARSER-TEST-SYSTEM"
                                            :symbol-name "VAR")))
       (is (equal (length result)
                  1))
-      (is (equal (docparser:node-docstring (elt result 0))
+      (is (equal (quickdocs-parser:node-docstring (elt result 0))
                  "docstring")))))
 
 (def-suite load-systems)
@@ -162,10 +162,10 @@
     (loop for system in systems do
       (format t "~%Loading ~S~%" system)
       (finishes
-        (let ((index (docparser:parse system))
+        (let ((index (quickdocs-parser:parse system))
               (node-count 0))
-          (docparser:do-packages (package index)
-            (docparser:do-nodes (node package)
+          (quickdocs-parser:do-packages (package index)
+            (quickdocs-parser:do-nodes (node package)
               (incf node-count)))
           (if (> node-count 0)
             (progn
@@ -178,15 +178,15 @@
             failures)))
 
 (test printing
-  (let ((*index* (docparser:parse :docparser-test-system)))
-    (docparser:do-packages (package *index*)
-      (docparser:do-nodes (node package)
+  (let ((*index* (quickdocs-parser:parse :quickdocs-parser-test-system)))
+    (quickdocs-parser:do-packages (package *index*)
+      (quickdocs-parser:do-nodes (node package)
         (print node))
-      (docparser:dump *index*))))
+      (quickdocs-parser:dump *index*))))
 
 (test utils
-  (is-true (docparser:symbol-external-p 'docparser:render-humanize))
-  (is (equal (docparser:render-humanize 'docparser:render-humanize)
+  (is-true (quickdocs-parser:symbol-external-p 'quickdocs-parser:render-humanize))
+  (is (equal (quickdocs-parser:render-humanize 'quickdocs-parser:render-humanize)
              "render-humanize")))
 
 (run! 'tests)

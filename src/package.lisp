@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage docparser
+(defpackage quickdocs-parser
   (:use :cl)
   ;; Classes
   (:export :name-node

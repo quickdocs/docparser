@@ -1,5 +1,5 @@
 ;;;; print-object methods for nodes
-(in-package :docparser)
+(in-package :quickdocs-parser)
 
 ;;; Common Lisp classes
 

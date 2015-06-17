@@ -1,8 +1,8 @@
 (in-package :cl-user)
-(defpackage docparser-test-system
+(defpackage quickdocs-parser-test-system
   (:use :cl)
   (:documentation "docstring"))
-(in-package :docparser-test-system)
+(in-package :quickdocs-parser-test-system)
 
 (defparameter var t
   "docstring")

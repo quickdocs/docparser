@@ -1,4 +1,4 @@
-(in-package :docparser)
+(in-package :quickdocs-parser)
 
 ;;; Special variables
 
@@ -73,7 +73,7 @@
 (defun add-node (index node)
   "Add a node to an index, finding the proper package index."
   (let* ((symbol (node-name node))
-         (symbol-package (docparser:symbol-package-name symbol))
+         (symbol-package (quickdocs-parser:symbol-package-name symbol))
          (package-index (find symbol-package
                               (index-packages index)
                               :test #'equal

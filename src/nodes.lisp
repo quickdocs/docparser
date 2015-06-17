@@ -1,5 +1,5 @@
 ;;;; Classes that represent documentation nodes, and some methods
-(in-package :docparser)
+(in-package :quickdocs-parser)
 
 (defclass name-node ()
   ((form :accessor node-form
