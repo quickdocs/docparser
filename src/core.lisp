@@ -109,6 +109,7 @@
   "Parse a form into a node."
   (let ((first (first form)))
     (when (and (symbolp first)
+               (symbol-package first)
                (string= (package-name (symbol-package first)) :cffi))
       (let ((parser (rest (assoc first *cffi-parsers* :test #'string=))))
         (when parser
