@@ -19,8 +19,9 @@
 (defun ensure-preload (system-name)
   #+quicklisp (with-ignored-errors ()
                 ;; XXX: defsystem-depends-on won't be loaded when they are only systems which aren't loaded yet.
-                (ql:quickload (ql-dist:required-systems (ql-dist:find-system system-name))
-                              :silent t)
+                (let ((system (ql-dist:find-system system-name)))
+                  (when system
+                    (ql:quickload (ql-dist:required-systems system) :silent t)))
                 (ql:quickload system-name :silent t))
   t)
 
