@@ -65,7 +65,8 @@
 (defun add-node (index node)
   "Add a node to an index, finding the proper package index."
   (let* ((symbol (node-name node))
-         (symbol-package (quickdocs-parser:symbol-package-name symbol))
+         (symbol-package (and (symbol-package symbol)
+                              (package-name (symbol-package symbol))))
          (package-index (find symbol-package
                               (index-packages index)
                               :test #'equal
