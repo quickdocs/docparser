@@ -171,11 +171,13 @@
 
 (defun symbol-external-p (symbol)
   "Whether or not a symbol is external."
-  (multiple-value-bind (sym status)
-      (find-symbol (symbol-name symbol)
-                   (symbol-package symbol))
-    (declare (ignore sym))
-    (eq status :external)))
+  (check-type symbol symbol)
+  (let ((package (symbol-package symbol)))
+    (and package
+         (eq (nth-value 1
+                        (find-symbol (symbol-name symbol)
+                                     package))
+             :external))))
 
 (defun symbol-package-name (symbol)
   "Return the name of a package's symbol."
