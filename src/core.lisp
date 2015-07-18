@@ -27,6 +27,15 @@
                 (ql:quickload system-name :silent t))
   t)
 
+(defun ensure-dependency-tree-installed (system-name)
+  #+quicklisp
+  (labels ((tree-ensure-installed (tree)
+             (if (consp tree)
+                 (mapc #'tree-ensure-installed tree)
+                 (ql-dist:ensure-installed tree))))
+    (tree-ensure-installed (ql-dist:dependency-tree system-name)))
+  t)
+
 ;;; Loading systems
 
 (defun load-system (system-name)
@@ -126,7 +135,7 @@
 
 (defun parse-system (index system-name)
   "Parse a system."
-  (ensure-preload system-name)
+  (ensure-dependency-tree-installed system-name)
   (let* ((old-macroexpander *macroexpand-hook*)
          (*macroexpand-hook*
            #'(lambda (function form environment)
