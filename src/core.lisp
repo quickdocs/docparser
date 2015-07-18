@@ -128,7 +128,6 @@
   "Parse a system."
   #+quicklisp
   (ql::autoload-system-and-dependencies system-name)
-  (ensure-dependency-tree-installed system-name)
   (let* ((old-macroexpander *macroexpand-hook*)
          (*macroexpand-hook*
            #'(lambda (function form environment)
