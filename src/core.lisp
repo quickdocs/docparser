@@ -29,10 +29,29 @@
 
 ;;; Loading systems
 
+(defun asdf-components (comp)
+  (etypecase comp
+    (asdf::source-file (list comp))
+    (asdf::static-file nil)
+    (asdf::component
+     (loop for c in (funcall
+                     #+asdf3 #'asdf:component-children
+                     #-asdf3 #'asdf:module-components
+                     comp)
+           append (asdf-components c)))))
+
 (defun load-system (system-name)
   "Load an ASDF system by name."
   (with-ignored-errors ()
-    (asdf:compile-system system-name :force t)))
+    (loop for comp in (asdf-components (asdf:find-system system-name))
+          do (handler-case (typecase comp
+                             (asdf:cl-source-file
+                              (asdf:perform (make-instance 'asdf:compile-op) comp)
+                              (asdf:perform (make-instance 'asdf:load-op) comp))
+                             (asdf:c-source-file
+                              (asdf:perform (make-instance 'asdf:load-op) comp)))
+               (error (e)
+                 (princ e *error-output*) (fresh-line *error-output*))))))
 
 ;;; Indices
 
@@ -126,8 +145,7 @@
 
 (defun parse-system (index system-name)
   "Parse a system."
-  #+quicklisp
-  (ql::autoload-system-and-dependencies system-name)
+  (ensure-preload system-name)
   (let* ((old-macroexpander *macroexpand-hook*)
          (*macroexpand-hook*
            #'(lambda (function form environment)
@@ -146,12 +164,12 @@
                            (setf (node-form node) form))
                          (add-node index node))
                        t))
-               ;; Always pass the form to the old macroexpander. This ensures
-               ;; the system is loaded properly.
-               (funcall old-macroexpander
-                        function
-                        form
-                        environment)))))
+                 ;; Always pass the form to the old macroexpander. This ensures
+                 ;; the system is loaded properly.
+                 (funcall old-macroexpander
+                          function
+                          form
+                          environment)))))
     (load-system system-name)))
 
 ;;; External interface
