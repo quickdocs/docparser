@@ -181,7 +181,9 @@
 
 (defun symbol-package-name (symbol)
   "Return the name of a package's symbol."
-  (package-name (symbol-package symbol)))
+  (let ((package (symbol-package symbol)))
+    (when package
+      (package-name package))))
 
 (defun render-full-symbol (symbol)
   "Render a symbol into a string."

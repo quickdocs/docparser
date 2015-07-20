@@ -12,7 +12,10 @@
   `(handler-case
        (uiop:with-muffled-compiler-conditions ()
          (uiop:with-muffled-loader-conditions ()
-           ,@body))
+           (handler-bind ((warning (lambda (c)
+                                     (declare (ignore c))
+                                     (muffle-warning))))
+             ,@body)))
      (uiop:compile-file-error (c)
        (format *error-output* "Compilation error. Ignoring.~%  ~A~%" c))))
 
@@ -90,12 +93,12 @@
 (defun add-node (index node)
   "Add a node to an index, finding the proper package index."
   (let* ((symbol (node-name node))
-         (symbol-package (and (symbol-package symbol)
-                              (package-name (symbol-package symbol))))
-         (package-index (find symbol-package
-                              (index-packages index)
-                              :test #'equal
-                              :key #'package-index-name)))
+         (symbol-package (symbol-package-name symbol))
+         (package-index (when symbol-package
+                          (find symbol-package
+                                (index-packages index)
+                                :test #'equal
+                                :key #'package-index-name))))
     (when package-index
       (vector-push-extend node (package-index-nodes package-index)))))
 
@@ -228,3 +231,14 @@ symbol of a class name. If none are found, return NIL."
                      (if class
                          (typep node class)
                          t)))))
+
+;;; Documentation coverage
+
+(defun coverage (index)
+  "Return an alist of classes to the pair (documented nodes . total nodes of
+that class."
+  (let ((classes (list)))
+    (do-packages (package index)
+      (do-nodes (node index)
+        (pushnew (class-of node) classes)))
+    t))
