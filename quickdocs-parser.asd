@@ -6,6 +6,7 @@
   :homepage ""
   :bug-tracker ""
   :source-control (:git "")
+  :depends-on (:optima :trivia)
   :components ((:module "src"
                 :serial t
                 :components

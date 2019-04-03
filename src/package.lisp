@@ -16,7 +16,9 @@
            :struct-node
            :class-node
            :condition-node
-           :type-node)
+           :type-node
+           :optima-pattern-node
+           :trivia-pattern-node)
   ;; CFFI classes
   (:export :cffi-node
            :cffi-function

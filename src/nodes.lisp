@@ -114,6 +114,14 @@
   ()
   (:documentation "A type."))
 
+(defclass optima-pattern-node (operator-node)
+  ()
+  (:documentation "An optima defpattern node."))
+
+(defclass trivia-pattern-node (operator-node)
+  ()
+  (:documentation "A trivia defpattern node."))
+
 ;;; CFFI classes
 
 (defclass cffi-node ()
