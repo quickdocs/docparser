@@ -41,6 +41,16 @@
   (print-unreadable-object (type stream)
     (format stream "type ~A" (render-humanize (node-name type)))))
 
+(defmethod print-object ((optima-pattern optima-pattern-node) stream)
+  "Print a optima-pattern definition node."
+  (print-unreadable-object (optima-pattern stream)
+    (format stream "optima-pattern ~A" (render-humanize (node-name optima-pattern)))))
+
+(defmethod print-object ((trivia-pattern trivia-pattern-node) stream)
+  "Print a trivia-pattern definition node."
+  (print-unreadable-object (trivia-pattern stream)
+    (format stream "trivia-pattern ~A" (render-humanize (node-name trivia-pattern)))))
+
 ;;; CFFI classes
 
 (defmethod print-object ((function cffi-function) stream)

@@ -84,6 +84,24 @@
                    :docstring docstring
                    :lambda-list lambda-list)))
 
+(define-parser optima:defpattern (name lambda-list &rest body)
+  (let ((docstring (if (stringp (first body))
+                       (first body)
+                       nil)))
+    (make-instance 'optima-pattern-node
+                   :name name
+                   :docstring docstring
+                   :lambda-list lambda-list)))
+
+(define-parser trivia:defpattern (name lambda-list &rest body)
+  (let ((docstring (if (stringp (first body))
+                       (first body)
+                       nil)))
+    (make-instance 'trivia-pattern-node
+                   :name name
+                   :docstring docstring
+                   :lambda-list lambda-list)))
+
 (defun parse-slot (slot)
   (if (listp slot)
       (let ((slot (copy-list slot)))
